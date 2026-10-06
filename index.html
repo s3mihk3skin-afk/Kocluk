@@ -1,0 +1,1174 @@
+```react
+import React, { useState, useEffect, useMemo } from 'react';
+import { 
+  Compass, Crown, CheckCircle2, Lock, Sparkles, Award, Zap, 
+  ExternalLink, HelpCircle, Code, BookOpen, Fitness, Languages, 
+  TrendingUp, X, Check, Copy, AlertCircle, ChevronRight, UserCheck, Phone,
+  MessageSquare, Play, Star, ShieldCheck, Flame, RefreshCw, Trophy
+} from 'lucide-react';
+
+// VIP Kod Hesaplama Algoritması
+// Örnek: "Murat" -> Harf Sayısı (L) = 5
+// Hesap: L + L^2 + L! = 5 + 25 + 120 = 150
+// İlk Harf (m) + 150 + Son Harf (t) -> m150t
+const calculateFactorial = (n) => {
+  if (n <= 1) return 1;
+  let result = 1;
+  for (let i = 2; i <= n; i++) result *= i;
+  return result;
+};
+
+const generateVipCode = (name) => {
+  if (!name || name.trim().length === 0) return '';
+  const cleanName = name.trim().toLowerCase();
+  const length = cleanName.length;
+  const firstLetter = cleanName[0];
+  const lastLetter = cleanName[length - 1];
+  
+  // Algoritma: L + L^2 + L!
+  const codeVal = length + Math.pow(length, 2) + calculateFactorial(length);
+  return `${firstLetter}${codeVal}${lastLetter}`;
+};
+
+// Basit Konfeti Efekti Tetikleyici
+const triggerConfetti = () => {
+  const container = document.getElementById('confetti-container');
+  if (!container) return;
+  
+  const colors = ['#8B5CF6', '#10B981', '#F59E0B', '#EC4899', '#3B82F6'];
+  for (let i = 0; i < 40; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'confetti-particle';
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = '-10px';
+    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.width = `${Math.random() * 8 + 6}px`;
+    particle.style.height = `${Math.random() * 8 + 6}px`;
+    particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    particle.style.animation = `fall ${Math.random() * 2 + 1.5}s linear forwards`;
+    container.appendChild(particle);
+
+    setTimeout(() => particle.remove(), 3500);
+  }
+};
+
+const INITIAL_ROADMAPS = [
+  {
+    id: 'software-fullstack',
+    title: 'Modern Full-Stack Web Geliştirme 2026',
+    category: 'Yazılım',
+    description: 'Sıfırdan kıdemli geliştirici seviyesine: HTML/CSS, React, Node.js ve Mimari Tasarım.',
+    is_vip: false,
+    badge: 'Popüler',
+    icon: 'Code',
+    nodes: [
+      {
+        id: 'node-1',
+        title: 'HTML5 & Semantik Web Mimarisi',
+        description: 'Erişilebilir, SEO uyumlu ve modüler HTML yapısı kurma rehberi.',
+        is_vip_method: false,
+        step_order: 1,
+        xp: 150,
+        estimated_time: '1 Hafta',
+        detailedContent: {
+          summary: 'Web sitelerinin iskeletini modern semantik etiketler ve erişilebilirlik (ARIA) standartlarıyla oluşturmayı öğrenin.',
+          keyTakeaways: [
+            'Semantik Etiket Yapısı (<main>, <article>, <section>, <aside>)',
+            'Accessibility (a11y) ve ARIA Özellikleri',
+            'SEO Optimizasyonu için Head Yapılandırması',
+            'Performanslı Görsel ve Medya Yükleme'
+          ],
+          practicalCode: `<main role="main" class="container mx-auto">
+  <article class="prose lg:prose-xl">
+    <h1>Modern Web Uygulamaları</h1>
+    <p>Semantik yapılar arama motorları ve ekran okuyucular için kritik önem taşır.</p>
+  </article>
+</main>`,
+          resources: [
+            { name: 'MDN Web Docs - HTML Semantik', link: 'https://developer.mozilla.org/tr/docs/Web/HTML' },
+            { name: 'W3C Web Accessibility Guidelines', link: 'https://www.w3.org/WAI/standards-guidelines/' }
+          ]
+        }
+      },
+      {
+        id: 'node-2',
+        title: 'Modern CSS3, Tailwind CSS & Responsive Tasarım',
+        description: 'Flexbox, CSS Grid ve Tailwind CSS ile kusursuz UI tasarımları yapın.',
+        is_vip_method: false,
+        step_order: 2,
+        xp: 250,
+        estimated_time: '2 Hafta',
+        detailedContent: {
+          summary: 'Ekran boyutlarına tam uyumlu, akıcı animation ve modern Tailwind CSS utility sınıfları ile şık tasarımlar üretin.',
+          keyTakeaways: [
+            'Flexbox & CSS Grid Katman Mimarisi',
+            'Tailwind CSS Config ve Custom Color Palette',
+            'Dark Mode Mantığı ve System Theme Senkronizasyonu',
+            'CSS Grid ve GPU Destekli Transform Animasyonları'
+          ],
+          practicalCode: `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-slate-900 rounded-xl shadow-2xl backdrop-blur-md border border-purple-500/20">
+  <div class="p-4 bg-slate-800/80 rounded-lg hover:border-emerald-500 transition-all">
+    <h3 class="text-emerald-400 font-bold">Responsive Kart</h3>
+  </div>
+</div>`,
+          resources: [
+            { name: 'Tailwind CSS Dokümantasyonu', link: 'https://tailwindcss.com/docs' },
+            { name: 'CSS Tricks Grid Rehberi', link: 'https://css-tricks.com/snippets/css/complete-guide-grid/' }
+          ]
+        }
+      },
+      {
+        id: 'node-3',
+        title: 'Modern JavaScript (ES6+) & Asenkron Programlama',
+        description: 'Promises, Async/Await, Closures ve Event Loop mekanizmasında uzmanlaşın.',
+        is_vip_method: false,
+        step_order: 3,
+        xp: 350,
+        estimated_time: '3 Hafta',
+        detailedContent: {
+          summary: 'JavaScript engine çalışma mantığını kavrayın, asenkron verileri verimli bir şekilde yönetin.',
+          keyTakeaways: [
+            'Event Loop, Call Stack & Microtask Queue',
+            'Fetch API, Axios & AbortController',
+            'ES6 Modules, Destructuring & Optional Chaining',
+            'Memory Leak Önleme & Performance Profiling'
+          ],
+          practicalCode: `async function fetchUserData(userId) {
+  try {
+    const response = await fetch(\`https://api.example.com/users/\${userId}\`);
+    if (!response.ok) throw new Error('Kullanıcı bulunamadı');
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error('Veri çekme hatası:', error.message);
+    return { success: false, error: error.message };
+  }
+}`,
+          resources: [
+            { name: 'JavaScript.info Türkçe Rehber', link: 'https://tr.javascript.info/' },
+            { name: 'You Don\'t Know JS (Book Series)', link: 'https://github.com/getify/You-Dont-Know-JS' }
+          ]
+        }
+      },
+      {
+        id: 'node-4',
+        title: '👑 VIP Gizli Mimari: Clean Architecture & Micro-Frontends',
+        description: 'Büyük ölçekli kurumsal yazılım projelerinde performans ve kod sürdürülebilirliği formülü.',
+        is_vip_method: true,
+        step_order: 4,
+        xp: 600,
+        estimated_time: '4 Hafta',
+        detailedContent: {
+          summary: 'Sadece VIP üyelere özel: Silicon Valley şirketlerinin kullandığı Micro-Frontend ve SOLID odaklı frontend mimarisi stratejisi.',
+          keyTakeaways: [
+            'Domain Driven Design (DDD) Frontend Katmanı',
+            'Module Federation ile Micro-Frontend Kurulumu',
+            'State Management: Zustand vs TanStack Query (React Query)',
+            'CI/CD Pipeline ve Automated E2E Testing (Playwright)'
+          ],
+          practicalCode: `// VIP Mimarisi: Custom Query Hook & Caching Strategy
+import { useQuery } from '@tanstack/react-query';
+
+export const useVIPAnalytics = (userId) => {
+  return useQuery({
+    queryKey: ['vip-analytics', userId],
+    queryFn: async () => {
+      const res = await fetch(\`/api/vip/stats/\${userId}\`);
+      return res.json();
+    },
+    staleTime: 1000 * 60 * 15, // 15 dakika önbellek
+  });
+};`,
+          resources: [
+            { name: 'VIP Özel Strateji Dokümanı (PDF)', link: 'https://wa.me/905516315351' },
+            { name: 'Micro-Frontend Architecture Guide', link: 'https://micro-frontends.org/' }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'yks-prep',
+    title: 'YKS Derece Stratejisi (Sayısalk / EA)',
+    category: 'YKS Hazırlık',
+    description: 'Son 6 Ayda Derece Yaptıran Günlük Analitik Çalışma ve Deneme Takip Sistemi.',
+    is_vip: false,
+    badge: 'Sınav',
+    icon: 'BookOpen',
+    nodes: [
+      {
+        id: 'yks-node-1',
+        title: 'TYT Matematik Paragraf Rutini & Zaman Yönetimi',
+        description: 'Her gün 30 soru paragraf + 20 problem çözme tekniği.',
+        is_vip_method: false,
+        step_order: 1,
+        xp: 200,
+        estimated_time: 'Sürekli',
+        detailedContent: {
+          summary: 'TYT sınavında en çok zaman kaybettiren Türkçe ve Matematik bölümlerini hızlandırma teknikleri.',
+          keyTakeaways: [
+            'Turlama Tekniği ile Turlama Süresini 20 Dk Düşürme',
+            'Soru Kökünü Okuma ve Odaklanma Egzersizleri',
+            'Yanlış Analizi Defteri Oluşturma Yöntemi'
+          ],
+          resources: [
+            { name: 'ÖSYM Çıkmış Sorular Arşivi', link: 'https://www.osym.gov.tr' }
+          ]
+        }
+      },
+      {
+        id: 'yks-node-2',
+        title: '👑 VIP Derece Yöntemi: Son 60 Gün Soru Deposu Analizi',
+        description: 'ÖSYM mantığına göre nokta atışı soru tahminleri ve nokta eksik kapatma formülü.',
+        is_vip_method: true,
+        step_order: 2,
+        xp: 500,
+        estimated_time: '2 Ay',
+        detailedContent: {
+          summary: 'YKS İlk 1000 derece öğrencilerinin uyguladığı VIP soru defteri analizi ve net artırma metriği.',
+          keyTakeaways: [
+            'Eksik Analiz Matrisi Oluşturma',
+            'Sınav Anı Kaygı ve Stres Regülasyonu',
+            'Konu Dağılımına Göre Öncelikli VIP Soru Tipleri'
+          ],
+          resources: [
+            { name: 'VIP WhatsApp Destek Grubu', link: 'https://wa.me/905516315351' }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: 'fitness-body',
+    title: 'Estetik Vücut Geliştirme & Hipertrofi',
+    category: 'Vücut Geliştirme',
+    description: 'Bilimsel antrenman programlaması, makro beslenme ve recovery stratejileri.',
+    is_vip: false,
+    badge: 'Spor',
+    icon: 'Fitness',
+    nodes: [
+      {
+        id: 'fit-node-1',
+        title: 'Progressive Overload & Antrenman Mimarisi',
+        description: 'Ağırlık artışı, hacim yönetimi ve RPE ölçeği kullanımı.',
+        is_vip_method: false,
+        step_order: 1,
+        xp: 180,
+        estimated_time: '4 Hafta',
+        detailedContent: {
+          summary: 'Kas gelişimini sürekli kılmak için bilimsel yüklenme ilkeleri.',
+          keyTakeaways: [
+            'RPE (Rate of Perceived Exertion) Tespiti',
+            'Haftalık Set Hacmi ve Dinlenme Süreleri',
+            'Tendon Sağlığı ve Mobilite Egzersizleri'
+          ],
+          resources: [
+            { name: 'Scientific Muscle Building Articles', link: 'https://pubmed.ncbi.nlm.nih.gov/' }
+          ]
+        }
+      },
+      {
+        id: 'fit-node-2',
+        title: '👑 VIP Anabolik Beslenme & Form Koruma Protokolü',
+        description: 'Yağ yakarken kas kütlesini koruma: Makro zamanlaması ve ek takviye rehberi.',
+        is_vip_method: true,
+        step_order: 2,
+        xp: 450,
+        estimated_time: 'Ömür Boyu',
+        detailedContent: {
+          summary: 'Profesyonel sporcuların kullandığı beslenme zamanlaması ve performans optimizasyon kiti.',
+          keyTakeaways: [
+            'Karbonhidrat Döngüsü (Carb Cycling) Yöntemi',
+            'Glikojen Depolarını Dolu Tutma Taktikleri',
+            'Uyku Kalitesi ve Kortizol Hormonu Kontrolü'
+          ],
+          resources: [
+            { name: 'Semih Keskin Spor Danışmanlığı', link: 'https://wa.me/905516315351' }
+          ]
+        }
+      }
+    ]
+  }
+];
+
+export default function App() {
+  // LocalStorage State Initializations
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('pusula_user');
+    return saved ? JSON.parse(saved) : {
+      username: 'Geliştirici Adayı',
+      is_vip: false,
+      total_xp: 0,
+      completed_nodes: []
+    };
+  });
+
+  const [activeCategory, setActiveCategory] = useState('Tümü');
+  const [selectedRoadmapId, setSelectedRoadmapId] = useState('software-fullstack');
+  const [selectedNode, setSelectedNode] = useState(null);
+  
+  // Modals
+  const [showVipModal, setShowVipModal] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  
+  // VIP Verification Form State
+  const [verifyName, setVerifyName] = useState('');
+  const [verifyCode, setVerifyCode] = useState('');
+  const [verifyStatus, setVerifyStatus] = useState(null); // { type: 'success'|'error', msg: '' }
+
+  // Interactive Kod Üreteci (Demo Modu)
+  const [calcName, setCalcName] = useState('');
+  const generatedCodePreview = useMemo(() => generateVipCode(calcName), [calcName]);
+
+  // Persist User to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('pusula_user', JSON.stringify(user));
+  }, [user]);
+
+  // Current Active Roadmap
+  const currentRoadmap = useMemo(() => {
+    return INITIAL_ROADMAPS.find(r => r.id === selectedRoadmapId) || INITIAL_ROADMAPS[0];
+  }, [selectedRoadmapId]);
+
+  // Roadmap Progress Percentage
+  const progressPercentage = useMemo(() => {
+    if (!currentRoadmap || currentRoadmap.nodes.length === 0) return 0;
+    const completedInThisMap = currentRoadmap.nodes.filter(n => user.completed_nodes.includes(n.id));
+    return Math.round((completedInThisMap.length / currentRoadmap.nodes.length) * 100);
+  }, [currentRoadmap, user.completed_nodes]);
+
+  // Level Calculation based on Total XP
+  const userLevel = Math.floor(user.total_xp / 300) + 1;
+
+  // Node Completion Toggle
+  const toggleNodeCompletion = (node) => {
+    if (node.is_vip_method && !user.is_vip) {
+      setShowVipModal(true);
+      return;
+    }
+
+    const isAlreadyCompleted = user.completed_nodes.includes(node.id);
+    let newCompleted = [...user.completed_nodes];
+    let newXp = user.total_xp;
+
+    if (isAlreadyCompleted) {
+      newCompleted = newCompleted.filter(id => id !== node.id);
+      newXp = Math.max(0, newXp - node.xp);
+    } else {
+      newCompleted.push(node.id);
+      newXp += node.xp;
+      triggerConfetti();
+    }
+
+    setUser(prev => ({
+      ...prev,
+      completed_nodes: newCompleted,
+      total_xp: newXp
+    }));
+  };
+
+  const handleVerifyVipCode = (e) => {
+    e.preventDefault();
+    if (!verifyName.trim() || !verifyCode.trim()) {
+      setVerifyStatus({ type: 'error', msg: 'Lütfen adınızı ve VIP kodunuzu giriniz.' });
+      return;
+    }
+
+    const expectedCode = generateVipCode(verifyName);
+    
+    if (verifyCode.trim().toLowerCase() === expectedCode.toLowerCase()) {
+      setUser(prev => ({
+        ...prev,
+        is_vip: true,
+        username: verifyName.trim()
+      }));
+      setVerifyStatus({ 
+        type: 'success', 
+        msg: `Tebrikler ${verifyName}! VIP üyeliğiniz başarıyla doğrulandı ve hesabınıza aktarıldı. 👑` 
+      });
+      triggerConfetti();
+      setTimeout(() => {
+        setShowVipModal(false);
+        setVerifyStatus(null);
+        setVerifyName('');
+        setVerifyCode('');
+      }, 3000);
+    } else {
+      setVerifyStatus({ 
+        type: 'error', 
+        msg: `Geçersiz VIP Kodu! Girdiğiniz ad için beklenen kod formatı uyuşmuyor. Lütfen Kurucu Semih Keskin ile iletişime geçin.` 
+      });
+    }
+  };
+
+  const filteredRoadmaps = useMemo(() => {
+    if (activeCategory === 'Tümü') return INITIAL_ROADMAPS;
+    return INITIAL_ROADMAPS.filter(r => r.category === activeCategory);
+  }, [activeCategory]);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-purple-500 selection:text-white relative overflow-x-hidden">
+      {/* Confetti Container */}
+      <div id="confetti-container" className="fixed inset-0 pointer-events-none z-50 overflow-hidden" />
+
+      {/* Dynamic Background Glow Effect */}
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      {}
+      <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-lg border-b border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+          
+          {/* Logo & Branding */}
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedRoadmapId(INITIAL_ROADMAPS[0].id)}>
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-600 to-emerald-400 p-0.5 shadow-lg shadow-purple-500/20">
+              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                <Compass className="w-6 h-6 text-emerald-400 animate-spin-slow" />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-purple-200 to-emerald-400 bg-clip-text text-transparent">
+                  Pusula
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900/50 text-purple-300 border border-purple-500/30 font-medium">
+                  Skill Tree
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 hidden sm:block">İnteraktif Yol Haritası ve Beceri Ağacı</p>
+            </div>
+          </div>
+
+          {/* User Stats & VIP CTA */}
+          <div className="flex items-center gap-3 sm:gap-6">
+            
+            {/* User Level & XP Badge */}
+            <div className="hidden md:flex items-center gap-3 px-3.5 py-1.5 bg-slate-800/60 border border-slate-700/50 rounded-xl">
+              <div className="flex items-center gap-1.5 text-amber-400 font-bold text-sm">
+                <Zap className="w-4 h-4 fill-amber-400" />
+                <span>{user.total_xp} XP</span>
+              </div>
+              <div className="h-4 w-[1px] bg-slate-700" />
+              <div className="flex items-center gap-1 text-slate-300 text-xs font-semibold">
+                <Trophy className="w-3.5 h-3.5 text-purple-400" />
+                <span>Seviye {userLevel}</span>
+              </div>
+              {user.is_vip && (
+                <span className="ml-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1">
+                  <Crown className="w-3 h-3 text-amber-400" /> VIP
+                </span>
+              )}
+            </div>
+
+            {/* Hakkında Button */}
+            <button 
+              onClick={() => setShowAboutModal(true)}
+              className="px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-300 hover:text-white bg-slate-800/40 hover:bg-slate-800 border border-slate-700/50 rounded-xl transition-all"
+            >
+              Hakkında
+            </button>
+
+            {/* Glowing VIP Button */}
+            <button
+              onClick={() => setShowVipModal(true)}
+              className={`relative group overflow-hidden px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 shadow-xl ${
+                user.is_vip 
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-amber-500/20 hover:scale-105' 
+                  : 'bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105 animate-pulse'
+              }`}
+            >
+              <span className="flex items-center gap-2 relative z-10">
+                <Crown className={`w-4 h-4 ${user.is_vip ? 'fill-slate-950' : 'animate-bounce'}`} />
+                {user.is_vip ? '👑 VIP Üyesiniz' : 'VIP / Premium\'a Geç'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        {/* Profile Stats Bar */}
+        <section className="bg-gradient-to-r from-slate-900/90 via-purple-950/20 to-slate-900/90 border border-purple-500/20 rounded-2xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-md">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black ${
+                  user.is_vip 
+                    ? 'bg-gradient-to-tr from-amber-400 to-yellow-600 text-slate-950 shadow-lg shadow-amber-500/30' 
+                    : 'bg-gradient-to-tr from-purple-600 to-emerald-500 text-white'
+                }`}>
+                  {user.username.charAt(0).toUpperCase()}
+                </div>
+                {user.is_vip && (
+                  <div className="absolute -top-2 -right-2 bg-slate-950 p-1 rounded-full border border-amber-400 shadow">
+                    <Crown className="w-4 h-4 text-amber-400 fill-amber-400" />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-white">{user.username}</h2>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                    user.is_vip 
+                      ? 'bg-amber-500/10 border-amber-500/40 text-amber-400' 
+                      : 'bg-slate-800 border-slate-700 text-slate-400'
+                  }`}>
+                    {user.is_vip ? '👑 VIP Üye' : 'Ücretsiz Hesabı'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 mt-1">
+                  Toplam <span className="text-emerald-400 font-semibold">{user.completed_nodes.length}</span> adım tamamlandı • {user.total_xp} Toplam XP
+                </p>
+              </div>
+            </div>
+
+            {/* Level & XP Progress Meter */}
+            <div className="flex-1 max-w-md bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+              <div className="flex justify-between items-center text-xs font-medium mb-2">
+                <span className="text-slate-400">Seviye {userLevel} Gelişimi</span>
+                <span className="text-purple-400 font-bold">{user.total_xp % 300} / 300 XP</span>
+              </div>
+              <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                <div 
+                  className="h-full bg-gradient-to-r from-purple-500 to-emerald-400 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(100, ((user.total_xp % 300) / 300) * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* WhatsApp Direct Founder Support CTA */}
+            <a
+              href="https://wa.me/905516315351?text=Merhaba%20Semih%20Bey,%20Pusula%20platformu%20hakkinda%20bilgi%20almak%20istiyorum"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl transition-all text-xs font-bold"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>Kurucu Semih Keskin ile İletişim</span>
+            </a>
+
+          </div>
+        </section>
+
+        {}
+        <section className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {['Tümü', 'Yazılım', 'YKS Hazırlık', 'Vücut Geliştirme', 'Dil Öğrenimi', 'Dijital Pazarlama'].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap border ${
+                activeCategory === cat
+                  ? 'bg-purple-600 text-white border-purple-400 shadow-lg shadow-purple-600/30'
+                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </section>
+
+        {}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {filteredRoadmaps.map((map) => {
+            const isSelected = selectedRoadmapId === map.id;
+            const completedCount = map.nodes.filter(n => user.completed_nodes.includes(n.id)).length;
+            const progress = Math.round((completedCount / map.nodes.length) * 100);
+
+            return (
+              <div
+                key={map.id}
+                onClick={() => setSelectedRoadmapId(map.id)}
+                className={`cursor-pointer p-5 rounded-2xl border transition-all duration-300 relative group flex flex-col justify-between ${
+                  isSelected 
+                    ? 'bg-gradient-to-b from-purple-900/30 to-slate-900 border-purple-500 shadow-xl shadow-purple-950/50 ring-1 ring-purple-500/50' 
+                    : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-purple-300 font-medium border border-slate-700">
+                      {map.category}
+                    </span>
+                    {map.badge && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                        {map.badge}
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-bold text-slate-100 text-base group-hover:text-purple-300 transition-colors">
+                    {map.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-2 line-clamp-2">
+                    {map.description}
+                  </p>
+                </div>
+
+                <div className="mt-5 pt-4 border-t border-slate-800/80">
+                  <div className="flex justify-between items-center text-xs mb-1.5">
+                    <span className="text-slate-400">{completedCount}/{map.nodes.length} Tamamlandı</span>
+                    <span className="text-emerald-400 font-bold">%{progress}</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-emerald-400 rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </section>
+
+        {}
+        <section className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+          
+          {/* Header of Active Roadmap Tree */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 pb-6 border-b border-slate-800">
+            <div>
+              <div className="flex items-center gap-3">
+                <h2 className="text-2xl font-black text-white">{currentRoadmap.title}</h2>
+                {currentRoadmap.is_vip && (
+                  <span className="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold flex items-center gap-1">
+                    <Crown className="w-3.5 h-3.5" /> VIP Harita
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-slate-400 mt-1">{currentRoadmap.description}</p>
+            </div>
+
+            {/* Total Progress Ring / Indicator */}
+            <div className="flex items-center gap-4 bg-slate-950 p-3.5 rounded-2xl border border-slate-800 min-w-[220px]">
+              <div className="relative w-12 h-12 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-slate-800"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-emerald-400 transition-all duration-700"
+                    strokeDasharray={`${progressPercentage}, 100`}
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <span className="absolute text-xs font-bold text-white">%{progressPercentage}</span>
+              </div>
+              <div>
+                <span className="text-xs text-slate-400 block font-medium">Harita İlerlemesi</span>
+                <span className="text-sm font-bold text-emerald-400">
+                  {progressPercentage === 100 ? 'Tamamlandı! 🎉' : 'Devam Ediyor'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Nodes Flow Tree */}
+          <div className="relative py-8 max-w-3xl mx-auto space-y-12">
+            
+            {/* Tree Connecting Background Axis */}
+            <div className="absolute left-1/2 top-10 bottom-10 w-1 bg-gradient-to-b from-purple-600 via-emerald-500 to-slate-800 -translate-x-1/2 z-0 hidden sm:block opacity-40" />
+
+            {currentRoadmap.nodes.map((node, index) => {
+              const isCompleted = user.completed_nodes.includes(node.id);
+              const isLocked = node.is_vip_method && !user.is_vip;
+
+              return (
+                <div key={node.id} className="relative z-10 flex flex-col sm:flex-row items-center gap-6 group">
+                  
+                  {/* Step Order Node Circle Button */}
+                  <div className="sm:w-1/2 flex justify-start sm:justify-end">
+                    <div 
+                      onClick={() => toggleNodeCompletion(node)}
+                      className={`cursor-pointer flex items-center justify-center w-14 h-14 rounded-2xl font-black text-lg transition-all duration-300 shadow-xl border ${
+                        isCompleted 
+                          ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-emerald-500/30 scale-105'
+                          : isLocked
+                          ? 'bg-slate-950 text-amber-400 border-amber-500/50 shadow-amber-500/10 hover:border-amber-400'
+                          : 'bg-slate-950 text-purple-400 border-purple-500/40 hover:border-purple-400 hover:scale-105'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <Check className="w-7 h-7 stroke-[3]" />
+                      ) : isLocked ? (
+                        <Lock className="w-6 h-6 text-amber-400" />
+                      ) : (
+                        <span>{node.step_order}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Node Content Card */}
+                  <div className="w-full sm:w-1/2">
+                    <div 
+                      className={`p-5 rounded-2xl border transition-all duration-300 relative ${
+                        isLocked 
+                          ? 'bg-slate-950/80 border-amber-500/30 hover:border-amber-500/60' 
+                          : isCompleted 
+                          ? 'bg-slate-900/90 border-emerald-500/40 hover:border-emerald-500' 
+                          : 'bg-slate-950/90 border-slate-800 hover:border-purple-500/50'
+                      }`}
+                    >
+                      {/* Node Header */}
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-purple-900/40 text-purple-300 border border-purple-500/20">
+                          +{node.xp} XP
+                        </span>
+                        {node.is_vip_method && (
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                            <Crown className="w-3 h-3" /> VIP Yöntem
+                          </span>
+                        )}
+                      </div>
+
+                      <h4 className="font-bold text-slate-100 text-base mb-1">
+                        {node.title}
+                      </h4>
+                      <p className="text-xs text-slate-400 line-clamp-2">
+                        {node.description}
+                      </p>
+
+                      {/* Detail Modal Trigger Button */}
+                      <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                        <button
+                          onClick={() => {
+                            if (isLocked) {
+                              setShowVipModal(true);
+                            } else {
+                              setSelectedNode(node);
+                            }
+                          }}
+                          className="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                        >
+                          <span>{isLocked ? 'VIP Kilidini Aç & İncele' : 'Detaylı Eğitimi Gör'}</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => toggleNodeCompletion(node)}
+                          className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                            isCompleted 
+                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' 
+                              : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                          }`}
+                        >
+                          {isCompleted ? 'Tamamlandı ✓' : 'Tamamla'}
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+        </section>
+
+      </main>
+
+      {}
+      {selectedNode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            
+            <button
+              onClick={() => setSelectedNode(null)}
+              className="absolute top-5 right-5 p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="px-3 py-1 bg-purple-900/50 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-bold">
+                Adım {selectedNode.step_order}
+              </span>
+              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5" /> +{selectedNode.xp} XP Odul
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                Tahmini Süre: {selectedNode.estimated_time}
+              </span>
+            </div>
+
+            <h2 className="text-2xl font-black text-white mb-3">
+              {selectedNode.title}
+            </h2>
+
+            <p className="text-sm text-slate-300 leading-relaxed mb-6 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+              {selectedNode.detailedContent?.summary || selectedNode.description}
+            </p>
+
+            {/* Key Takeaways Checklist */}
+            {selectedNode.detailedContent?.keyTakeaways && (
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-slate-200 mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  Kazanılacak Temel Beceriler ve Konular:
+                </h3>
+                <ul className="space-y-2">
+                  {selectedNode.detailedContent.keyTakeaways.map((item, idx) => (
+                    <li key={idx} className="text-xs sm:text-sm text-slate-300 flex items-start gap-2.5 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/50">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Practical Code / Guide Snippet */}
+            {selectedNode.detailedContent?.practicalCode && (
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-slate-200 mb-2 flex items-center gap-2">
+                  <Code className="w-4 h-4 text-purple-400" />
+                  Pratik Uygulama & Kod Örneği:
+                </h3>
+                <div className="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs text-emerald-300 overflow-x-auto relative">
+                  <pre>{selectedNode.detailedContent.practicalCode}</pre>
+                </div>
+              </div>
+            )}
+
+            {/* Resources Links */}
+            {selectedNode.detailedContent?.resources && (
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-slate-200 mb-2 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-amber-400" />
+                  Önerilen Kaynaklar & Dokümanlar:
+                </h3>
+                <div className="space-y-2">
+                  {selectedNode.detailedContent.resources.map((res, i) => (
+                    <a
+                      key={i}
+                      href={res.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-between p-3 bg-slate-950 hover:bg-slate-800/60 rounded-xl border border-slate-800 text-xs text-purple-300 font-medium transition-colors"
+                    >
+                      <span>{res.name}</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setSelectedNode(null)}
+                className="px-5 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 rounded-xl transition-colors"
+              >
+                Kapat
+              </button>
+              <button
+                onClick={() => {
+                  toggleNodeCompletion(selectedNode);
+                  setSelectedNode(null);
+                }}
+                className="px-6 py-2.5 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all shadow-lg shadow-emerald-400/20"
+              >
+                {user.completed_nodes.includes(selectedNode.id) ? 'Tamamlandı Olarak İşaretlendi ✓' : 'Adımı Tamamla ve XP Kazan'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {}
+      {showVipModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+          <div className="bg-slate-900 border border-amber-500/30 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8 animate-in fade-in zoom-in duration-200">
+            
+            <button
+              onClick={() => setShowVipModal(false)}
+              className="absolute top-5 right-5 p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold mb-4">
+              <Crown className="w-4 h-4 fill-amber-400" />
+              <span>Ayrıcalıklı VIP Ekosistem</span>
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
+              Ömür Boyu VIP Erişimi Alın
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 mb-6">
+              Sadece VIP üyelere özel gizli yöntemlere, kişisel stratejilere ve özel doğrulama kodu ayrıcalığına hemen erişin.
+            </p>
+
+            {/* VIP Package Card */}
+            <div className="bg-gradient-to-b from-slate-950 to-slate-900 border border-amber-500/20 p-5 rounded-2xl mb-6 space-y-3">
+              <div className="flex justify-between items-baseline pb-3 border-b border-slate-800">
+                <span className="text-xs text-slate-400 font-medium">Sınırlı Sayıda VIP Paket</span>
+                <span className="text-2xl font-black text-amber-400">149 TL <span className="text-xs text-slate-400 font-normal">(Tek Seferlik / Ömür Boyu)</span></span>
+              </div>
+
+              <ul className="space-y-2 text-xs sm:text-sm text-slate-200">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Tüm Gizli VIP Yol Haritaları & Özel Yöntemler</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Sınırsız Birebir Strateji ve Yol Haritası İncelemesi</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Profilde Altın Rozet & WhatsApp VIP Destek Grubu</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Direct WhatsApp Contact CTA */}
+            <div className="space-y-3 mb-8">
+              <a
+                href="https://wa.me/905516315351?text=Merhaba%20Semih%20Bey,%20Pusula%20VIP%20üyelik%20almak%20istiyorum"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+              >
+                <MessageSquare className="w-5 h-5 fill-slate-950" />
+                <span>Kurucu Semih Keskin ile İletişime Geç & VIP Al</span>
+              </a>
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
+                <Phone className="w-3.5 h-3.5 text-slate-400" />
+                <span>İletişim Tel: <strong className="text-slate-200">0551 631 53 51</strong></span>
+              </div>
+            </div>
+
+            {/* VIP Verification Code Form Section */}
+            <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800">
+              <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-purple-400" />
+                VIP Kod Doğrulama
+              </h3>
+              <p className="text-xs text-slate-400 mb-4">
+                Kurucu Semih Keskin'den aldığınız özel doğrulama kodunu girerek hesabınızı anında VIP seviyesine yükseltin.
+              </p>
+
+              <form onSubmit={handleVerifyVipCode} className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] text-slate-400 font-medium block mb-1">Adınız</label>
+                    <input
+                      type="text"
+                      placeholder="Örn: Murat"
+                      value={verifyName}
+                      onChange={(e) => setVerifyName(e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-slate-400 font-medium block mb-1">VIP Kodunuz</label>
+                    <input
+                      type="text"
+                      placeholder="Örn: m150t"
+                      value={verifyCode}
+                      onChange={(e) => setVerifyCode(e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
+                    />
+                  </div>
+                </div>
+
+                {verifyStatus && (
+                  <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+                    verifyStatus.type === 'success' 
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' 
+                      : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                  }`}>
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{verifyStatus.msg}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs transition-colors shadow-lg shadow-purple-600/20"
+                >
+                  Kodu Onayla & VIP Ol
+                </button>
+              </form>
+
+              {/* VIP Code Generator Formula Info */}
+              <div className="mt-4 pt-3 border-t border-slate-900 text-[11px] text-slate-500">
+                <p className="font-semibold text-slate-400 mb-1">💡 VIP Kod Oluşturma Formülü:</p>
+                <p>İsmin ilk harfi + (Uzunluk + Uzunluk² + Uzunluk!) + İsmin son harfi</p>
+                
+                {/* Live Generator Tool inside Modal */}
+                <div className="mt-3 bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                  <div className="flex items-center justify-between gap-2">
+                    <input
+                      type="text"
+                      placeholder="Kod testi için isim yazın..."
+                      value={calcName}
+                      onChange={(e) => setCalcName(e.target.value)}
+                      className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-[11px] text-slate-200 w-full"
+                    />
+                    {generatedCodePreview && (
+                      <span className="font-mono text-xs text-amber-400 font-bold bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20 shrink-0">
+                        {generatedCodePreview}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {}
+      {showAboutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            
+            <button
+              onClick={() => setShowAboutModal(false)}
+              className="absolute top-5 right-5 p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-2xl font-black text-white mb-4 flex items-center gap-2">
+              <Compass className="w-6 h-6 text-purple-400" />
+              Pusula Hakkında
+            </h2>
+
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+              Pusula, kişisel gelişim, yazılım kariyeri ve akademik hedefler için tasarlanmış oyunlaştırılmış interaktif bir beceri ağacı platformudur. Her adım detaylandırılmış içeriklerle donatılmıştır.
+            </p>
+
+            {/* Founder Card */}
+            <div className="bg-gradient-to-r from-purple-950/40 via-slate-950 to-slate-950 border border-purple-500/30 p-5 rounded-2xl relative overflow-hidden">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-500 to-emerald-400 p-0.5 shadow-lg">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center font-black text-purple-300 text-xl">
+                    SK
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-white text-base">Semih Keskin</h3>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1">
+                      <UserCheck className="w-3 h-3" /> Onaylanmış Kurucu
+                    </span>
+                  </div>
+                  <p className="text-xs text-purple-300 font-medium">Kurucu & Kıdemli Geliştirici</p>
+                  <p className="text-xs text-slate-400 mt-1">İletişim: 0551 631 53 51</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-800 flex justify-end">
+              <button
+                onClick={() => setShowAboutModal(false)}
+                className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition-colors"
+              >
+                Anladım
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {}
+      <footer className="mt-20 border-t border-slate-800/80 bg-slate-950/90 py-12 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center pb-8 border-b border-slate-800/60">
+            
+            {/* Branding */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Compass className="w-5 h-5 text-emerald-400" />
+                <span className="font-extrabold text-lg text-white">Pusula - Skill Tree & Roadmaps</span>
+              </div>
+              <p className="text-xs text-slate-400">
+                Geleceğinizi adım adım planlayın, becerilerinizi oyunlaştırarak geliştirin.
+              </p>
+            </div>
+
+            {/* Founder Prestigious Card */}
+            <div className="md:col-span-2 flex justify-start md:justify-end">
+              <div className="bg-slate-900/90 border border-purple-500/30 hover:border-purple-500/60 p-4 rounded-2xl flex items-center gap-4 transition-all max-w-md w-full shadow-lg">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-500 to-amber-400 p-0.5 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-bold text-amber-300">
+                    SK
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white">Kurucu & Geliştirici: Semih Keskin</span>
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
+                      VIP
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    WhatsApp Destek & VIP Onay: <strong className="text-slate-200">0551 631 53 51</strong>
+                  </p>
+                </div>
+                <a
+                  href="https://wa.me/905516315351?text=Merhaba%20Semih%20Bey,%20Pusula%20VIP%20hakkinda%20bilgi%20almak%20istiyorum"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/30 transition-colors"
+                  title="WhatsApp Ulaş"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+            <p>© 2026 Pusula Skill Tree Platformu. Tüm hakları saklıdır.</p>
+            <div className="flex items-center gap-4">
+              <button onClick={() => setShowAboutModal(true)} className="hover:text-slate-300 transition-colors">Hakkında</button>
+              <button onClick={() => setShowVipModal(true)} className="hover:text-amber-400 transition-colors font-semibold">VIP Üyelik</button>
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+      {/* Global CSS for Animations */}
+      <style>{`
+        @keyframes fall {
+          to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+        .confetti-particle {
+          position: absolute;
+          pointer-events: none;
+        }
+      `}</style>
+
+    </div>
+  );
+}
+```
